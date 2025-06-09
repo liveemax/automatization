@@ -1,0 +1,11 @@
+.layoutContainer {
+    display: flex;
+    gap:16px;
+
+    &Page {
+        gap:10px;
+        display: flex;
+        align-items: center;
+    }
+}
+    

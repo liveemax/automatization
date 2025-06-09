@@ -1,0 +1,15 @@
+.sideMenu {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    border-right: 1px solid black;
+    width: 200px;
+    min-height: 100vh;
+    margin-left: 20px;    
+    gap: 10px;
+
+    a {
+        cursor: pointer;
+    }
+}
+    
