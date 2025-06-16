@@ -1,4 +1,4 @@
-import SideMenu from "@/component/SideMenu";
+import SideMenu from "@/app/component/SideMenu";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 

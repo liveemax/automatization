@@ -1,0 +1,22 @@
+.alphabot {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+
+    &Item {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+
+        button {
+            padding: 0px;
+            color: red;
+        }
+    }
+
+    a {
+        max-width: max-content;
+    }
+}

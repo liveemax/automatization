@@ -3,6 +3,7 @@
 import { useLayoutEffect, useState } from "react";
 
 import { Button, TextField } from "@mui/material";
+import Link from "next/link";
 
 import styles from "./styles.module.scss"
 
@@ -11,13 +12,15 @@ interface ISideMenu {
   headerText: string,
   postText?: string,
   isGroup?: boolean,
+  onAddValue?:(inputText:string)=>undefined
 }
 
 export default function MainInput({
   localstorageName,
   headerText,
   postText,
-  isGroup
+  isGroup,
+  onAddValue = () => {}
 }:ISideMenu) {
   const [inputText,setInputText] = useState('')
 
@@ -26,7 +29,25 @@ export default function MainInput({
   }
 
   const onButtonClick = () => {
-    localStorage.setItem(localstorageName,inputText)
+    if(isGroup){
+      const groupValue = JSON.parse(localStorage.getItem(localstorageName) || '{}')
+
+      groupValue[inputText] = inputText
+
+      localStorage.setItem(localstorageName,JSON.stringify(groupValue))
+
+      setInputText('')
+    } else {
+      localStorage.setItem(localstorageName,JSON.stringify(inputText))
+    }
+
+    onAddValue(inputText)
+  }
+
+  const onReset = () => {
+    localStorage.removeItem(localstorageName)
+    
+    setInputText('')
   }
   
   useLayoutEffect(()=>{
@@ -38,12 +59,11 @@ export default function MainInput({
     return (
           <>
           <h2>{headerText}</h2>
-          <div className={styles.layoutContainerPage}>
+          <div className={styles.sideMenuContainer}>
             <TextField value={inputText} onChange={onInputChange} id="outlined-basic" label="Outlined" variant="outlined" />
             <Button variant="contained" onClick={onButtonClick}>Set path</Button>
-            <Button variant="text" onClick={onButtonClick}>Reset</Button>
+            <Button variant="text" onClick={onReset}>Reset</Button>
             {postText}
-            chrome://version/
           </div>
           </>
     );

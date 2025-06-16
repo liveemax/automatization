@@ -4,8 +4,8 @@ export const SIDE_LINKS = [
         link:'/',
     },
     {
-        text:'Обновления',
-        link:'/update',
+        text:'Альфабот',
+        link:'/alphabot',
     },
     {
         text:'Автоматизация проектов',
@@ -16,4 +16,14 @@ export const SIDE_LINKS = [
 export const LOCALSTORAGE_PATH = {
     chromePath: 'chromePath',
     alphabotProjects: 'alphabotProjects',
+    alphabotUpdateTime: 'alphabotUpdateTime',
 }
+
+export const API = {
+    browserCreate:'api/browser/create',
+    browserClose:'api/browser/close',
+    updateRaffles:'api/alphabot/update-raffles'
+}
+
+export const MIN_DELAY = 500;
+export const MAX_DELAY = 5000;
