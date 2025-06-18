@@ -19,12 +19,10 @@ export const checkBrowserStatus = async (setBrowserStatus, showError, executable
     }
   };
 
-
-  
-    export const browserClose = async (setBrowserStatus) => {
+export const browserClose = async (setBrowserStatus) => {
       setBrowserStatus({});
 
-        const response = await fetch(API.browserClose, {
+        await fetch(API.browserClose, {
           method: 'GET',
         });
   }

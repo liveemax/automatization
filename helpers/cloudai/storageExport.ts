@@ -1,11 +1,13 @@
-import { LOCALSTORAGE_PATH } from "../constants/constants";
+import { EXPORTED_LOCALSTORAGE_PATH } from "../constants/constants";
+
+
 
   
   /**
    * LocalStorage Manager for importing and exporting data
    */
   class LocalStorageManager {
-    constructor(keys = LOCALSTORAGE_PATH) {
+    constructor(keys = EXPORTED_LOCALSTORAGE_PATH) {
       this.keys = keys;
     }
   
@@ -14,6 +16,7 @@ import { LOCALSTORAGE_PATH } from "../constants/constants";
      * @returns {Object} Object containing all localStorage data
      */
     exportData() {
+      
       const exportData = {};
       
       Object.entries(this.keys).forEach(([keyName, storageKey]) => {
@@ -203,11 +206,14 @@ import { LOCALSTORAGE_PATH } from "../constants/constants";
   }
   
   // Create and export default instance
-  const storageManager = new LocalStorageManager(LOCALSTORAGE_PATH);
+  const storageManager = new LocalStorageManager(EXPORTED_LOCALSTORAGE_PATH);
   
   // Export individual functions for convenience
   export const exportData = () => storageManager.exportData();
-  export const exportToFile = (filename) => storageManager.exportToFile(filename);
+  export const exportToFile = (filename) => {
+    console.log(EXPORTED_LOCALSTORAGE_PATH,'EXPORTED_LOCALSTORAGE_PATH');
+
+    return storageManager.exportToFile(filename)}
   export const importData = (data, overwrite) => storageManager.importData(data, overwrite);
   export const importFromFile = (file, overwrite?:boolean) => storageManager.importFromFile(file, overwrite);
   export const clearItems = (keyNames) => storageManager.clearItems(keyNames);
@@ -216,7 +222,7 @@ import { LOCALSTORAGE_PATH } from "../constants/constants";
   export const getAllValues = () => storageManager.getAllValues();
   
   // Export the manager class and instance
-  export { LocalStorageManager, storageManager as default, LOCALSTORAGE_PATH };
+  // export { LocalStorageManager, storageManager as default, EXPORTED_LOCALSTORAGE_PATH };
   
   // Usage examples:
   /*

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getBrowser } from '../../lib/browser-manager';
+import { getBrowser } from '../../../helpers/utils/browser/browser-manager';
 
 const browser = await getBrowser();
 

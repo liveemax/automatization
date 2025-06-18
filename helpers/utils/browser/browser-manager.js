@@ -1,14 +1,6 @@
 import puppeteer from 'puppeteer-core';
 
-let globalBrowser = null;
-
 export async function getBrowser(executablePath) {
-  console.log(globalBrowser,'globalBrowserglobalBrowserglobalBrowserglobalBrowser');
-  
-  if (globalBrowser && globalBrowser.isConnected()) {
-    return globalBrowser;
-  }
-
   try {
     // If no existing browser found, launch with puppeteer
     
@@ -24,21 +16,19 @@ export async function getBrowser(executablePath) {
       ]
     });
 
-    globalBrowser = browser;
-    return globalBrowser;
+    return browser;
   } catch (error) {
     console.error('Failed to get browser:', error);
     throw new Error('Could not connect to or launch browser');
   }
 }
 
-export async function closeBrowser() {
-  if (globalBrowser) {
+export async function closeBrowser(browser) {
+  if (browser) {
     try {
-      await globalBrowser.close();
+      await browser.close();
     } catch (error) {
       console.log('Browser already closed');
     }
-    globalBrowser = null;
   }
 }

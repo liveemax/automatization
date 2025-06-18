@@ -16,6 +16,12 @@ export const SIDE_LINKS = [
 export const LOCALSTORAGE_PATH = {
     chromePath: 'chromePath',
     alphabotProjects: 'alphabotProjects',
+    alphabotRaffles: 'alphabotRaffles',
+    alphabotUpdateTime: 'alphabotUpdateTime',
+}
+
+export const EXPORTED_LOCALSTORAGE_PATH = {
+    alphabotProjects: 'alphabotProjects',
     alphabotUpdateTime: 'alphabotUpdateTime',
 }
 
