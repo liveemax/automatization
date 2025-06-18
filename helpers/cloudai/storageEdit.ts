@@ -1,9 +1,10 @@
-import { LOCALSTORAGE_PATH } from "./storageexport";
+import { LOCALSTORAGE_PATH } from "../constants/constants";
 
   /**
    * LocalStorage Editor for modifying existing items
    */
   class LocalStorageEditor {
+    keys: {[path:string]:string};
     constructor(keys = LOCALSTORAGE_PATH) {
       this.keys = keys;
     }
@@ -15,13 +16,13 @@ import { LOCALSTORAGE_PATH } from "./storageexport";
      * @param {Object} options - Edit options
      * @returns {Object} Edit result with success status and details
      */
-    editItem(keyName, newValue, options = {}) {
+    editItem(keyName:string, newValue:any, options = {}) {
       const {
         mode = 'replace',  // 'replace', 'append', 'prepend', 'merge', 'function'
         createIfMissing = false,
         backup = true,
         validate = null
-      } = options;
+      } = options as any;
   
       const storageKey = this.keys[keyName];
       if (!storageKey) {
@@ -101,7 +102,8 @@ import { LOCALSTORAGE_PATH } from "./storageexport";
             break;
   
           case 'merge':
-            if (typeof currentValue === 'object' && currentValue !== null && !Array.isArray(currentValue)) {
+            if (typeof currentValue === 'object' && currentValue !== null && !Array.isArray(currentValue) ) {
+              //@ts-ignore
               finalValue = { ...currentValue, ...newValue };
             } else {
               return {
@@ -122,6 +124,7 @@ import { LOCALSTORAGE_PATH } from "./storageexport";
                 newValue: null
               };
             }
+            //@ts-ignore
             finalValue = newValue(currentValue);
             break;
   
@@ -162,7 +165,7 @@ import { LOCALSTORAGE_PATH } from "./storageexport";
           storageKey: storageKey
         };
   
-      } catch (error) {
+      } catch (error:any) {
         return {
           success: false,
           error: `Edit failed: ${error.message}`,
@@ -180,8 +183,8 @@ import { LOCALSTORAGE_PATH } from "./storageexport";
      * @param {Object} options - Edit options
      * @returns {Object} Edit result
      */
-    editProperty(keyName, propertyPath, newValue, options = {}) {
-      return this.editItem(keyName, (currentValue) => {
+    editProperty(keyName:string, propertyPath:string, newValue:string, options = {}) {
+      return this.editItem(keyName, (currentValue:any) => {
         if (typeof currentValue !== 'object' || currentValue === null) {
           throw new Error('Cannot edit property of non-object value');
         }
@@ -212,10 +215,10 @@ import { LOCALSTORAGE_PATH } from "./storageexport";
      * @param {Object} options - Options including position, duplicates handling
      * @returns {Object} Edit result
      */
-    addToArray(keyName, item, options = {}) {
-      const { position = 'end', allowDuplicates = true, uniqueBy = null } = options;
+    addToArray(keyName:string, item:any, options = {}) {
+      const { position = 'end', allowDuplicates = true, uniqueBy = null } = options as any;
   
-      return this.editItem(keyName, (currentValue) => {
+      return this.editItem(keyName, (currentValue:any) => {
         if (!Array.isArray(currentValue)) {
           throw new Error('Value is not an array');
         }
@@ -254,10 +257,10 @@ import { LOCALSTORAGE_PATH } from "./storageexport";
      * @param {Object} options - Options including removal criteria
      * @returns {Object} Edit result
      */
-    removeFromArray(keyName, itemOrIndex, options = {}) {
-      const { by = 'value', all = false } = options; // 'value', 'index', 'property'
+    removeFromArray(keyName:string, itemOrIndex:any, options:any = {}) {
+      const { by = 'value', all = false } = options // 'value', 'index', 'property'
   
-      return this.editItem(keyName, (currentValue) => {
+      return this.editItem(keyName, (currentValue:any) => {
         if (!Array.isArray(currentValue)) {
           throw new Error('Value is not an array');
         }
@@ -302,7 +305,7 @@ import { LOCALSTORAGE_PATH } from "./storageexport";
      * @param {string} targetKeyName - Target key name to restore to
      * @returns {Object} Restore result
      */
-    restoreFromBackup(backupKey, targetKeyName) {
+    restoreFromBackup(backupKey:string, targetKeyName:string) {
       try {
         const backupValue = localStorage.getItem(backupKey);
         if (backupValue === null) {
@@ -327,7 +330,7 @@ import { LOCALSTORAGE_PATH } from "./storageexport";
           success: true,
           restoredValue: backupValue
         };
-      } catch (error) {
+      } catch (error:any) {
         return {
           success: false,
           error: `Restore failed: ${error.message}`
@@ -340,11 +343,11 @@ import { LOCALSTORAGE_PATH } from "./storageexport";
   const editor = new LocalStorageEditor(LOCALSTORAGE_PATH);
   
   // Export convenience functions
-  export const editItem = (keyName, newValue, options) => editor.editItem(keyName, newValue, options);
-  export const editProperty = (keyName, propertyPath, newValue, options) => editor.editProperty(keyName, propertyPath, newValue, options);
-  export const addToArray = (keyName, item, options) => editor.addToArray(keyName, item, options);
-  export const removeFromArray = (keyName, itemOrIndex, options) => editor.removeFromArray(keyName, itemOrIndex, options);
-  export const restoreFromBackup = (backupKey, targetKeyName) => editor.restoreFromBackup(backupKey, targetKeyName);
+  export const editItem = (keyName:string, newValue:any, options:any) => editor.editItem(keyName, newValue, options);
+  export const editProperty = (keyName:any, propertyPath:any, newValue:any, options:any) => editor.editProperty(keyName, propertyPath, newValue, options);
+  export const addToArray = (keyName:any, item:any, options:any) => editor.addToArray(keyName, item, options);
+  export const removeFromArray = (keyName:any, itemOrIndex:any, options:any) => editor.removeFromArray(keyName, itemOrIndex, options);
+  export const restoreFromBackup = (backupKey:any, targetKeyName:any) => editor.restoreFromBackup(backupKey, targetKeyName);
   
   // Export the editor class and instance
   export { LocalStorageEditor, editor as default };

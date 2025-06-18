@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 
-import { importFromFile } from '@/helpers/cloudai/storageexport';
+import { importFromFile } from '@/helpers/cloudai/storageExport';
 
 export default function InputFileUpload() {
 

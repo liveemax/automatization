@@ -1,12 +1,11 @@
 import { EXPORTED_LOCALSTORAGE_PATH } from "../constants/constants";
 
-
-
   
   /**
    * LocalStorage Manager for importing and exporting data
    */
   class LocalStorageManager {
+    keys: {[path:string]:string};
     constructor(keys = EXPORTED_LOCALSTORAGE_PATH) {
       this.keys = keys;
     }
@@ -17,7 +16,7 @@ import { EXPORTED_LOCALSTORAGE_PATH } from "../constants/constants";
      */
     exportData() {
       
-      const exportData = {};
+      const exportData:any = {};
       
       Object.entries(this.keys).forEach(([keyName, storageKey]) => {
         try {
@@ -67,12 +66,12 @@ import { EXPORTED_LOCALSTORAGE_PATH } from "../constants/constants";
      * @param {boolean} overwrite - Whether to overwrite existing values
      * @returns {Object} Import results with success/failure counts
      */
-    importData(data, overwrite = true) {
+    importData(data:any, overwrite = true) {
       const results = {
         success: 0,
         failed: 0,
         skipped: 0,
-        errors: []
+        errors: [] as Array<string>
       };
   
       Object.entries(data).forEach(([keyName, value]) => {
@@ -98,7 +97,7 @@ import { EXPORTED_LOCALSTORAGE_PATH } from "../constants/constants";
             
           localStorage.setItem(storageKey, valueToStore);
           results.success++;
-        } catch (error) {
+        } catch (error:any) {
           results.failed++;
           results.errors.push(`Failed to import ${keyName}: ${error.message}`);
         }
@@ -113,16 +112,16 @@ import { EXPORTED_LOCALSTORAGE_PATH } from "../constants/constants";
      * @param {boolean} overwrite - Whether to overwrite existing values
      * @returns {Promise<Object>} Import results
      */
-    async importFromFile(file, overwrite = true) {
+    async importFromFile(file:any, overwrite = true) {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         
-        reader.onload = (e) => {
+        reader.onload = (e:any) => {
           try {
             const data = JSON.parse(e.target.result);
             const results = this.importData(data, overwrite);
             resolve(results);
-          } catch (error) {
+          } catch (error:any) {
             reject(new Error(`Failed to parse JSON: ${error.message}`));
           }
         };
@@ -140,27 +139,13 @@ import { EXPORTED_LOCALSTORAGE_PATH } from "../constants/constants";
      * @param {string[]} keyNames - Array of key names to clear
      * @returns {number} Number of items cleared
      */
-    clearItems(keyNames = []) {
-      let cleared = 0;
-      const keysToClear = keyNames.length > 0 ? keyNames : Object.keys(this.keys);
-      
-      keysTolear.forEach(keyName => {
-        const storageKey = this.keys[keyName];
-        if (storageKey && localStorage.getItem(storageKey) !== null) {
-          localStorage.removeItem(storageKey);
-          cleared++;
-        }
-      });
-      
-      return cleared;
-    }
   
     /**
      * Get a specific value from localStorage
      * @param {string} keyName - Key name to retrieve
      * @returns {any} Parsed value or null if not found
      */
-    getValue(keyName) {
+    getValue(keyName:string) {
       const storageKey = this.keys[keyName];
       if (!storageKey) return null;
       
@@ -179,7 +164,7 @@ import { EXPORTED_LOCALSTORAGE_PATH } from "../constants/constants";
      * @param {string} keyName - Key name to set
      * @param {any} value - Value to store
      */
-    setValue(keyName, value) {
+    setValue(keyName:string, value:string) {
       const storageKey = this.keys[keyName];
       if (!storageKey) {
         throw new Error(`Unknown key: ${keyName}`);
@@ -197,7 +182,7 @@ import { EXPORTED_LOCALSTORAGE_PATH } from "../constants/constants";
      * @returns {Object} Current values for all configured keys
      */
     getAllValues() {
-      const values = {};
+      const values = {} as any;
       Object.keys(this.keys).forEach(keyName => {
         values[keyName] = this.getValue(keyName);
       });
@@ -210,15 +195,14 @@ import { EXPORTED_LOCALSTORAGE_PATH } from "../constants/constants";
   
   // Export individual functions for convenience
   export const exportData = () => storageManager.exportData();
-  export const exportToFile = (filename) => {
+  export const exportToFile = (filename:string) => {
     console.log(EXPORTED_LOCALSTORAGE_PATH,'EXPORTED_LOCALSTORAGE_PATH');
 
     return storageManager.exportToFile(filename)}
-  export const importData = (data, overwrite) => storageManager.importData(data, overwrite);
-  export const importFromFile = (file, overwrite?:boolean) => storageManager.importFromFile(file, overwrite);
-  export const clearItems = (keyNames) => storageManager.clearItems(keyNames);
-  export const getValue = (keyName) => storageManager.getValue(keyName);
-  export const setValue = (keyName, value) => storageManager.setValue(keyName, value);
+  export const importData = (data: any, overwrite:any) => storageManager.importData(data, overwrite);
+  export const importFromFile = (file:any, overwrite?:boolean) => storageManager.importFromFile(file, overwrite);
+  export const getValue = (keyName:string) => storageManager.getValue(keyName);
+  export const setValue = (keyName:string, value:string) => storageManager.setValue(keyName, value);
   export const getAllValues = () => storageManager.getAllValues();
   
   // Export the manager class and instance

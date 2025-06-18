@@ -5,7 +5,7 @@ import { Button } from "@mui/material";
 
 import InputFileUpload from "@/app/component/InputFileUpload";
 
-import { exportToFile } from "@/helpers/cloudai/storageexport";
+import { exportToFile } from "@/helpers/cloudai/storageExport";
 
 import styles from "./styles.module.scss";
 

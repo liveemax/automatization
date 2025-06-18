@@ -1,15 +1,15 @@
 import { NextResponse } from 'next/server';
-import { closeBrowser, getBrowser } from '../../../../helpers/utils/browser/browser-manager';
+import { closeBrowser, getBrowser } from '@/helpers/utils/browser/browser-manager';
 import { MAX_DELAY, MIN_DELAY } from '@/helpers/constants/constants';
 import { delay } from '@/helpers/utils/utils';
 
-export const getSelectorLinks = async (page) => {
+export const getSelectorLinks = async (page:any) => {
   try{
-  const h = await page.evaluate((rest) => {
-    const hrefs = []
+  const h = await page.evaluate((rest:any) => {
+    const hrefs:Array<string> = []
 
-    const links = document.querySelectorAll('.MuiPaper-root > .MuiLink-root');
-    links.forEach((link)=>{
+    const links = document.querySelectorAll('.MuiPaper-root > .MuiLink-root') as any;
+    links.forEach((link:{href:string})=>{
       const href = link?.href
       
       if(href){
@@ -19,8 +19,6 @@ export const getSelectorLinks = async (page) => {
 
     return Promise.resolve(hrefs);
   });
-  console.log(h,'hhhhhhhhh');
-  
 
   return h
 }
@@ -30,7 +28,7 @@ catch (error) {
   
 }
 
-export const loadMoreClick = async (page:any) => {
+export const loadMoreClick: (page:any)=>Promise<Array<string>> = async (page:any) => {
   const newPage = page;
 
   try{
@@ -52,7 +50,7 @@ export const loadMoreClick = async (page:any) => {
   }
 }
 
-export async function POST(req) {
+export async function POST(req:any) {
   const {alphabotProject, chromePath} = await req.json();
 
   try {

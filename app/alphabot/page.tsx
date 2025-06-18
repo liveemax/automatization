@@ -1,32 +1,31 @@
 'use client'
 
-// pages/index.js - Fixed frontend with better error handling
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Button from '@mui/material/Button';
 
 import MainInput from '@/app/component/MainInput';
 
-import { API, LOCALSTORAGE_PATH, MAX_DELAY, MIN_DELAY } from '@/helpers/constants/constants';
-
-import style from './styles.module.scss'
+import { API, LOCALSTORAGE_PATH } from '@/helpers/constants/constants';
 import { delay } from '@/helpers/utils/utils';
 
+import style from './styles.module.scss'
+
 export default function Home() {
-  const [alphabotList,setAlphabotList] = useState([])
-  const [raffleList,setRaffleList] = useState([])
+  const [alphabotList,setAlphabotList] = useState<Array<string>>([])
+  const [raffleList,setRaffleList] = useState<Array<string>>([])
 
   const onProjectDelete = (alphabotProject:string) => () => {
-    const localstorageList = {}
+    const localstorageList = {} as any
     const newList = alphabotList.filter((listItem)=>{
       return listItem !== alphabotProject
     })
 
-    newList.forEach((listItem)=>{
+    newList.forEach((listItem:string)=>{
       localstorageList[listItem] = listItem
     })
 
-    setAlphabotList(Object.values(JSON.parse(localStorage.getItem(LOCALSTORAGE_PATH.alphabotProjects)) || ''))
+    setAlphabotList(Object.values(JSON.parse(localStorage.getItem(LOCALSTORAGE_PATH.alphabotProjects) || '')))
 
     localStorage.setItem(LOCALSTORAGE_PATH.alphabotProjects,JSON.stringify(localstorageList))
 
@@ -34,7 +33,7 @@ export default function Home() {
 }
 
   const onRaffleDelete = (raffle:string) => () => {
-    const localstorageList = {}
+    const localstorageList = {} as any
     const newList = raffleList.filter((listItem)=>{
       return listItem !== raffle
     })
@@ -43,7 +42,7 @@ export default function Home() {
       localstorageList[listItem] = listItem
     })
 
-    setRaffleList(Object.values(JSON.parse(localStorage.getItem(LOCALSTORAGE_PATH.alphabotRaffles)) || ''))
+    setRaffleList(Object.values(JSON.parse(localStorage.getItem(LOCALSTORAGE_PATH.alphabotRaffles) || '')))
 
     localStorage.setItem(LOCALSTORAGE_PATH.alphabotRaffles, JSON.stringify(localstorageList))
 
@@ -69,11 +68,11 @@ export default function Home() {
         })
       });
 
-      const data = await response.json();
+      const data = await response.json() as any;
 
       if(data.hrefs) {
-        const raffleBuffer = []
-        const alphabotRaffles = Object.values(JSON.parse(localStorage.getItem(LOCALSTORAGE_PATH.alphabotRaffles)) || '')
+        const raffleBuffer:Array<string> = []
+        const alphabotRaffles = Object.values(JSON.parse(localStorage.getItem(LOCALSTORAGE_PATH.alphabotRaffles) || ''))
 
         localStorage.setItem(LOCALSTORAGE_PATH.alphabotRaffles, JSON.stringify(alphabotRaffles))
 
@@ -90,8 +89,8 @@ export default function Home() {
 }
 
   useEffect(()=>{
-    const alphabotProjects = Object.values(JSON.parse(localStorage.getItem(LOCALSTORAGE_PATH.alphabotProjects)) || '')
-    const alphabotRaffles = Object.values(JSON.parse(localStorage.getItem(LOCALSTORAGE_PATH.alphabotRaffles)) || '')
+    const alphabotProjects = Object.values(JSON.parse(localStorage.getItem(LOCALSTORAGE_PATH.alphabotProjects) || '')) as Array<string>
+    const alphabotRaffles = Object.values(JSON.parse(localStorage.getItem(LOCALSTORAGE_PATH.alphabotRaffles) || '')) as Array<string>
 
     if(!alphabotProjects.length) {
       localStorage.setItem(LOCALSTORAGE_PATH.alphabotProjects,JSON.stringify({}))

@@ -1,8 +1,6 @@
 import puppeteer from 'puppeteer';
 
-export const alphabotChecker = async ({browserPath}) => {
-    console.log(browserPath,'browserPath');
-    
+export const alphabotChecker = async ({browserPath}:{browserPath:string}) => {
     const browser = await puppeteer.launch({executablePath: browserPath});
     const page = await browser.newPage();
     await page.goto('https://example.com');

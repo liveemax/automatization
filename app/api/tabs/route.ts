@@ -121,11 +121,10 @@ const browser = await getBrowser();
 //   }
 // }
 
-
 export async function GET() {
     const pages = await browser.pages();
     const tabs = await Promise.all(
-      pages.map(async (page, index) => {
+      pages.map(async (page:any, index:number) => {
         try {
           return {
             id: index,
@@ -143,7 +142,6 @@ export async function GET() {
         }
       })
     );
-    
     
     return NextResponse.json(
           { 

@@ -3,7 +3,6 @@
 import { useLayoutEffect, useState } from "react";
 
 import { Button, TextField } from "@mui/material";
-import Link from "next/link";
 
 import styles from "./styles.module.scss"
 
@@ -12,7 +11,7 @@ interface ISideMenu {
   headerText: string,
   postText?: string,
   isGroup?: boolean,
-  onAddValue?:(inputText:string)=>undefined
+  onAddValue?:(inputText:string)=>void
 }
 
 export default function MainInput({
