@@ -4,6 +4,10 @@ import chromium from "@sparticuz/chromium";
 export async function getBrowser(executableP) {
     try {
     // If no existing browser found, launch with puppeteer
+
+        const chrom = await chromium.executablePath();
+
+        console.log(chrom,"chrom");
     
         const browser = await puppeteer.launch({
             headless: false, // Set to true if you want headless
@@ -14,7 +18,7 @@ export async function getBrowser(executableP) {
                 "--disable-setuid-sandbox",
                 "--disable-dev-shm-usage"
             ],
-            ...executableP?{executablePath:executableP}:{executablePath:await chromium.executablePath()}
+            ...executableP?{executablePath:executableP}:{}
         });
 
         return browser;
