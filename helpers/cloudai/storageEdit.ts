@@ -49,7 +49,6 @@ class LocalStorageEditor {
                 };
             }
   
-            // Parse current value
             if (currentRaw !== null) {
                 try {
                     currentValue = JSON.parse(currentRaw || "");
