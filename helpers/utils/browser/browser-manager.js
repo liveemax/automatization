@@ -1,4 +1,5 @@
 import puppeteer from "puppeteer";
+import chromium from "@sparticuz/chromium";
 
 export async function getBrowser(executableP) {
     try {
@@ -13,7 +14,7 @@ export async function getBrowser(executableP) {
                 "--disable-setuid-sandbox",
                 "--disable-dev-shm-usage"
             ],
-            ...executableP?{executablePath:executableP}:{}
+            ...executableP?{executablePath:executableP}:{executablePath:await chromium.executablePath()}
         });
 
         return browser;
