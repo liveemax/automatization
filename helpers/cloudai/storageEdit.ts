@@ -1,12 +1,12 @@
 import { LOCALSTORAGE_PATH } from "../constants/constants";
 
-  /**
+/**
    * LocalStorage Editor for modifying existing items
    */
-  class LocalStorageEditor {
+class LocalStorageEditor {
     keys: {[path:string]:string};
     constructor(keys = LOCALSTORAGE_PATH) {
-      this.keys = keys;
+        this.keys = keys;
     }
   
     /**
@@ -17,162 +17,173 @@ import { LOCALSTORAGE_PATH } from "../constants/constants";
      * @returns {Object} Edit result with success status and details
      */
     editItem(keyName:string, newValue:any, options = {}) {
-      const {
-        mode = 'replace',  // 'replace', 'append', 'prepend', 'merge', 'function'
-        createIfMissing = false,
-        backup = true,
-        validate = null
-      } = options as any;
+        const {
+            mode = "replace",  // 'replace', 'append', 'prepend', 'merge', 'function'
+            createIfMissing = false,
+            backup = true,
+            validate = null
+        } = options as any;
   
-      const storageKey = this.keys[keyName];
-      if (!storageKey) {
-        return {
-          success: false,
-          error: `Unknown key: ${keyName}`,
-          originalValue: null,
-          newValue: null
-        };
-      }
+        const storageKey = this.keys[keyName];
+
+        if (!storageKey) {
+            return {
+                success: false,
+                error: `Unknown key: ${keyName}`,
+                originalValue: null,
+                newValue: null
+            };
+        }
   
-      try {
+        try {
         // Get current value
-        const currentRaw = localStorage.getItem(storageKey);
-        let currentValue = null;
+            const currentRaw = localStorage.getItem(storageKey);
+            let currentValue = null;
         
-        if (currentRaw === null && !createIfMissing) {
-          return {
-            success: false,
-            error: `Item '${keyName}' does not exist`,
-            originalValue: null,
-            newValue: null
-          };
-        }
-  
-        // Parse current value
-        if (currentRaw !== null) {
-          try {
-            currentValue = JSON.parse(currentRaw);
-          } catch {
-            currentValue = currentRaw;
-          }
-        }
-  
-        // Create backup if requested
-        let backupKey = null;
-        if (backup && currentRaw !== null) {
-          backupKey = `${storageKey}_backup_${Date.now()}`;
-          localStorage.setItem(backupKey, currentRaw);
-        }
-  
-        // Calculate new value based on mode
-        let finalValue;
-        switch (mode) {
-          case 'replace':
-            finalValue = newValue;
-            break;
-  
-          case 'append':
-            if (typeof currentValue === 'string') {
-              finalValue = currentValue + newValue;
-            } else if (Array.isArray(currentValue)) {
-              finalValue = [...currentValue, ...(Array.isArray(newValue) ? newValue : [newValue])];
-            } else {
-              return {
-                success: false,
-                error: 'Append mode requires string or array value',
-                originalValue: currentValue,
-                newValue: null
-              };
+            if (currentRaw === null && !createIfMissing) {
+                return {
+                    success: false,
+                    error: `Item '${keyName}' does not exist`,
+                    originalValue: null,
+                    newValue: null
+                };
             }
-            break;
   
-          case 'prepend':
-            if (typeof currentValue === 'string') {
-              finalValue = newValue + currentValue;
-            } else if (Array.isArray(currentValue)) {
-              finalValue = [...(Array.isArray(newValue) ? newValue : [newValue]), ...currentValue];
-            } else {
-              return {
-                success: false,
-                error: 'Prepend mode requires string or array value',
-                originalValue: currentValue,
-                newValue: null
-              };
+            // Parse current value
+            if (currentRaw !== null) {
+                try {
+                    currentValue = JSON.parse(currentRaw || "");
+                } catch {
+                    currentValue = currentRaw;
+                }
             }
-            break;
   
-          case 'merge':
-            if (typeof currentValue === 'object' && currentValue !== null && !Array.isArray(currentValue) ) {
-              //@ts-ignore
-              finalValue = { ...currentValue, ...newValue };
-            } else {
-              return {
-                success: false,
-                error: 'Merge mode requires object value',
-                originalValue: currentValue,
-                newValue: null
-              };
+            // Create backup if requested
+            let backupKey = null;
+
+            if (backup && currentRaw !== null) {
+                backupKey = `${storageKey}_backup_${Date.now()}`;
+                localStorage.setItem(backupKey, currentRaw);
             }
-            break;
   
-          case 'function':
-            if (typeof newValue !== 'function') {
-              return {
-                success: false,
-                error: 'Function mode requires a function as newValue',
-                originalValue: currentValue,
-                newValue: null
-              };
+            // Calculate new value based on mode
+            let finalValue;
+
+            switch (mode) {
+                case "replace":
+                    finalValue = newValue;
+
+                    break;
+  
+                case "append":
+                    if (typeof currentValue === "string") {
+                        finalValue = currentValue + newValue;
+                    } else if (Array.isArray(currentValue)) {
+                        finalValue = [...currentValue, ...(Array.isArray(newValue) ? newValue : [newValue])];
+                    } else {
+                        return {
+                            success: false,
+                            error: "Append mode requires string or array value",
+                            originalValue: currentValue,
+                            newValue: null
+                        };
+                    }
+
+                    break;
+  
+                case "prepend":
+                    if (typeof currentValue === "string") {
+                        finalValue = newValue + currentValue;
+                    } else if (Array.isArray(currentValue)) {
+                        finalValue = [...(Array.isArray(newValue) ? newValue : [newValue]), ...currentValue];
+                    } else {
+                        return {
+                            success: false,
+                            error: "Prepend mode requires string or array value",
+                            originalValue: currentValue,
+                            newValue: null
+                        };
+                    }
+
+                    break;
+  
+                case "merge":
+                    if (typeof currentValue === "object" && currentValue !== null && !Array.isArray(currentValue) ) {
+                        //@ts-ignore
+                        finalValue = { ...currentValue,
+                            ...newValue };
+                    } else {
+                        return {
+                            success: false,
+                            error: "Merge mode requires object value",
+                            originalValue: currentValue,
+                            newValue: null
+                        };
+                    }
+
+                    break;
+  
+                case "function":
+                    if (typeof newValue !== "function") {
+                        return {
+                            success: false,
+                            error: "Function mode requires a function as newValue",
+                            originalValue: currentValue,
+                            newValue: null
+                        };
+                    }
+
+                    //@ts-ignore
+                    finalValue = newValue(currentValue);
+
+                    break;
+  
+                default:
+                    return {
+                        success: false,
+                        error: `Unknown edit mode: ${mode}`,
+                        originalValue: currentValue,
+                        newValue: null
+                    };
             }
-            //@ts-ignore
-            finalValue = newValue(currentValue);
-            break;
   
-          default:
+            // Validate new value if validator provided
+            if (validate && typeof validate === "function") {
+                const validationResult = validate(finalValue, currentValue);
+
+                if (validationResult !== true) {
+                    return {
+                        success: false,
+                        error: `Validation failed: ${validationResult}`,
+                        originalValue: currentValue,
+                        newValue: finalValue
+                    };
+                }
+            }
+  
+            // Store the new value
+            const valueToStore = typeof finalValue === "object" && finalValue !== null
+                ? JSON.stringify(finalValue)
+                : String(finalValue);
+  
+            localStorage.setItem(storageKey, valueToStore);
+  
             return {
-              success: false,
-              error: `Unknown edit mode: ${mode}`,
-              originalValue: currentValue,
-              newValue: null
+                success: true,
+                originalValue: currentValue,
+                newValue: finalValue,
+                backupKey: backupKey,
+                storageKey: storageKey
+            };
+  
+        } catch (error:any) {
+            return {
+                success: false,
+                error: `Edit failed: ${error.message}`,
+                originalValue: null,
+                newValue: null
             };
         }
-  
-        // Validate new value if validator provided
-        if (validate && typeof validate === 'function') {
-          const validationResult = validate(finalValue, currentValue);
-          if (validationResult !== true) {
-            return {
-              success: false,
-              error: `Validation failed: ${validationResult}`,
-              originalValue: currentValue,
-              newValue: finalValue
-            };
-          }
-        }
-  
-        // Store the new value
-        const valueToStore = typeof finalValue === 'object' && finalValue !== null
-          ? JSON.stringify(finalValue)
-          : String(finalValue);
-  
-        localStorage.setItem(storageKey, valueToStore);
-  
-        return {
-          success: true,
-          originalValue: currentValue,
-          newValue: finalValue,
-          backupKey: backupKey,
-          storageKey: storageKey
-        };
-  
-      } catch (error:any) {
-        return {
-          success: false,
-          error: `Edit failed: ${error.message}`,
-          originalValue: null,
-          newValue: null
-        };
-      }
     }
   
     /**
@@ -184,28 +195,32 @@ import { LOCALSTORAGE_PATH } from "../constants/constants";
      * @returns {Object} Edit result
      */
     editProperty(keyName:string, propertyPath:string, newValue:string, options = {}) {
-      return this.editItem(keyName, (currentValue:any) => {
-        if (typeof currentValue !== 'object' || currentValue === null) {
-          throw new Error('Cannot edit property of non-object value');
-        }
+        return this.editItem(keyName, (currentValue:any) => {
+            if (typeof currentValue !== "object" || currentValue === null) {
+                throw new Error("Cannot edit property of non-object value");
+            }
   
-        const result = { ...currentValue };
-        const pathParts = propertyPath.split('.');
-        let current = result;
+            const result = { ...currentValue };
+            const pathParts = propertyPath.split(".");
+            let current = result;
   
-        // Navigate to parent of target property
-        for (let i = 0; i < pathParts.length - 1; i++) {
-          const part = pathParts[i];
-          if (!(part in current) || typeof current[part] !== 'object') {
-            current[part] = {};
-          }
-          current = current[part];
-        }
+            // Navigate to parent of target property
+            for (let i = 0; i < pathParts.length - 1; i++) {
+                const part = pathParts[i];
+
+                if (!(part in current) || typeof current[part] !== "object") {
+                    current[part] = {};
+                }
+
+                current = current[part];
+            }
   
-        // Set the final property
-        current[pathParts[pathParts.length - 1]] = newValue;
-        return result;
-      }, { ...options, mode: 'function' });
+            // Set the final property
+            current[pathParts[pathParts.length - 1]] = newValue;
+
+            return result;
+        }, { ...options,
+            mode: "function" });
     }
   
     /**
@@ -216,38 +231,40 @@ import { LOCALSTORAGE_PATH } from "../constants/constants";
      * @returns {Object} Edit result
      */
     addToArray(keyName:string, item:any, options = {}) {
-      const { position = 'end', allowDuplicates = true, uniqueBy = null } = options as any;
+        const { position = "end", allowDuplicates = true, uniqueBy = null } = options as any;
   
-      return this.editItem(keyName, (currentValue:any) => {
-        if (!Array.isArray(currentValue)) {
-          throw new Error('Value is not an array');
-        }
+        return this.editItem(keyName, (currentValue:any) => {
+            if (!Array.isArray(currentValue)) {
+                throw new Error("Value is not an array");
+            }
   
-        const result = [...currentValue];
+            const result = [...currentValue];
   
-        // Check for duplicates if needed
-        if (!allowDuplicates) {
-          if (uniqueBy) {
-            const exists = result.some(existing => 
-              typeof existing === 'object' && existing[uniqueBy] === item[uniqueBy]
-            );
-            if (exists) return result; // No change
-          } else {
-            if (result.includes(item)) return result; // No change
-          }
-        }
+            // Check for duplicates if needed
+            if (!allowDuplicates) {
+                if (uniqueBy) {
+                    const exists = result.some(existing => 
+                        typeof existing === "object" && existing[uniqueBy] === item[uniqueBy]
+                    );
+
+                    if (exists) return result; // No change
+                } else {
+                    if (result.includes(item)) return result; // No change
+                }
+            }
   
-        // Add item at specified position
-        if (position === 'start') {
-          result.unshift(item);
-        } else if (typeof position === 'number') {
-          result.splice(position, 0, item);
-        } else {
-          result.push(item);
-        }
+            // Add item at specified position
+            if (position === "start") {
+                result.unshift(item);
+            } else if (typeof position === "number") {
+                result.splice(position, 0, item);
+            } else {
+                result.push(item);
+            }
   
-        return result;
-      }, { ...options, mode: 'function' });
+            return result;
+        }, { ...options,
+            mode: "function" });
     }
   
     /**
@@ -258,45 +275,48 @@ import { LOCALSTORAGE_PATH } from "../constants/constants";
      * @returns {Object} Edit result
      */
     removeFromArray(keyName:string, itemOrIndex:any, options:any = {}) {
-      const { by = 'value', all = false } = options // 'value', 'index', 'property'
+        const { by = "value", all = false } = options; // 'value', 'index', 'property'
   
-      return this.editItem(keyName, (currentValue:any) => {
-        if (!Array.isArray(currentValue)) {
-          throw new Error('Value is not an array');
-        }
-  
-        let result = [...currentValue];
-  
-        if (by === 'index') {
-          if (typeof itemOrIndex === 'number' && itemOrIndex >= 0 && itemOrIndex < result.length) {
-            result.splice(itemOrIndex, 1);
-          }
-        } else if (by === 'value') {
-          if (all) {
-            result = result.filter(item => item !== itemOrIndex);
-          } else {
-            const index = result.indexOf(itemOrIndex);
-            if (index > -1) {
-              result.splice(index, 1);
+        return this.editItem(keyName, (currentValue:any) => {
+            if (!Array.isArray(currentValue)) {
+                throw new Error("Value is not an array");
             }
-          }
-        } else if (by === 'property' && typeof options.propertyName === 'string') {
-          if (all) {
-            result = result.filter(item => 
-              typeof item !== 'object' || item[options.propertyName] !== itemOrIndex
-            );
-          } else {
-            const index = result.findIndex(item => 
-              typeof item === 'object' && item[options.propertyName] === itemOrIndex
-            );
-            if (index > -1) {
-              result.splice(index, 1);
-            }
-          }
-        }
   
-        return result;
-      }, { ...options, mode: 'function' });
+            let result = [...currentValue];
+  
+            if (by === "index") {
+                if (typeof itemOrIndex === "number" && itemOrIndex >= 0 && itemOrIndex < result.length) {
+                    result.splice(itemOrIndex, 1);
+                }
+            } else if (by === "value") {
+                if (all) {
+                    result = result.filter(item => item !== itemOrIndex);
+                } else {
+                    const index = result.indexOf(itemOrIndex);
+
+                    if (index > -1) {
+                        result.splice(index, 1);
+                    }
+                }
+            } else if (by === "property" && typeof options.propertyName === "string") {
+                if (all) {
+                    result = result.filter(item => 
+                        typeof item !== "object" || item[options.propertyName] !== itemOrIndex
+                    );
+                } else {
+                    const index = result.findIndex(item => 
+                        typeof item === "object" && item[options.propertyName] === itemOrIndex
+                    );
+
+                    if (index > -1) {
+                        result.splice(index, 1);
+                    }
+                }
+            }
+  
+            return result;
+        }, { ...options,
+            mode: "function" });
     }
   
     /**
@@ -306,54 +326,56 @@ import { LOCALSTORAGE_PATH } from "../constants/constants";
      * @returns {Object} Restore result
      */
     restoreFromBackup(backupKey:string, targetKeyName:string) {
-      try {
-        const backupValue = localStorage.getItem(backupKey);
-        if (backupValue === null) {
-          return {
-            success: false,
-            error: 'Backup not found'
-          };
+        try {
+            const backupValue = localStorage.getItem(backupKey);
+
+            if (backupValue === null) {
+                return {
+                    success: false,
+                    error: "Backup not found"
+                };
+            }
+  
+            const targetStorageKey = this.keys[targetKeyName];
+
+            if (!targetStorageKey) {
+                return {
+                    success: false,
+                    error: `Unknown target key: ${targetKeyName}`
+                };
+            }
+  
+            localStorage.setItem(targetStorageKey, backupValue);
+            localStorage.removeItem(backupKey); // Clean up backup
+  
+            return {
+                success: true,
+                restoredValue: backupValue
+            };
+        } catch (error:any) {
+            return {
+                success: false,
+                error: `Restore failed: ${error.message}`
+            };
         }
-  
-        const targetStorageKey = this.keys[targetKeyName];
-        if (!targetStorageKey) {
-          return {
-            success: false,
-            error: `Unknown target key: ${targetKeyName}`
-          };
-        }
-  
-        localStorage.setItem(targetStorageKey, backupValue);
-        localStorage.removeItem(backupKey); // Clean up backup
-  
-        return {
-          success: true,
-          restoredValue: backupValue
-        };
-      } catch (error:any) {
-        return {
-          success: false,
-          error: `Restore failed: ${error.message}`
-        };
-      }
     }
-  }
+}
   
-  // Create and export default instance
-  const editor = new LocalStorageEditor(LOCALSTORAGE_PATH);
+// Create and export default instance
+const editor = new LocalStorageEditor(LOCALSTORAGE_PATH);
   
-  // Export convenience functions
-  export const editItem = (keyName:string, newValue:any, options:any) => editor.editItem(keyName, newValue, options);
-  export const editProperty = (keyName:any, propertyPath:any, newValue:any, options:any) => editor.editProperty(keyName, propertyPath, newValue, options);
-  export const addToArray = (keyName:any, item:any, options:any) => editor.addToArray(keyName, item, options);
-  export const removeFromArray = (keyName:any, itemOrIndex:any, options:any) => editor.removeFromArray(keyName, itemOrIndex, options);
-  export const restoreFromBackup = (backupKey:any, targetKeyName:any) => editor.restoreFromBackup(backupKey, targetKeyName);
+// Export convenience functions
+export const editItem = (keyName:string, newValue:any, options:any) => editor.editItem(keyName, newValue, options);
+export const editProperty = (keyName:any, propertyPath:any, newValue:any, options:any) => editor.editProperty(keyName, propertyPath, newValue, options);
+export const addToArray = (keyName:any, item:any, options:any) => editor.addToArray(keyName, item, options);
+export const removeFromArray = (keyName:any, itemOrIndex:any, options:any) => editor.removeFromArray(keyName, itemOrIndex, options);
+export const restoreFromBackup = (backupKey:any, targetKeyName:any) => editor.restoreFromBackup(backupKey, targetKeyName);
   
-  // Export the editor class and instance
-  export { LocalStorageEditor, editor as default };
+// Export the editor class and instance
+export { LocalStorageEditor, editor as default };
   
-  // Usage examples:
-  /*
+// Usage examples:
+/*
   // Simple replace
   editItem('chromePath', '/new/chrome/path');
   

@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server';
-import { getBrowser } from '../../../helpers/utils/browser/browser-manager';
+import { NextResponse } from "next/server";
+import { getBrowser } from "../../../helpers/utils/browser/browser-manager";
 
 const browser = await getBrowser();
 
@@ -124,30 +124,30 @@ const browser = await getBrowser();
 export async function GET() {
     const pages = await browser.pages();
     const tabs = await Promise.all(
-      pages.map(async (page:any, index:number) => {
-        try {
-          return {
-            id: index,
-            url: page.url(),
-            title: await page.title(),
-            active: !page.isClosed()
-          };
-        } catch (error) {
-          return {
-            id: index,
-            url: 'about:blank',
-            title: 'Unknown',
-            active: false
-          };
-        }
-      })
+        pages.map(async (page:any, index:number) => {
+            try {
+                return {
+                    id: index,
+                    url: page.url(),
+                    title: await page.title(),
+                    active: !page.isClosed()
+                };
+            } catch {
+                return {
+                    id: index,
+                    url: "about:blank",
+                    title: "Unknown",
+                    active: false
+                };
+            }
+        })
     );
     
     return NextResponse.json(
-          { 
+        { 
             success: true,
             tabs
-           },
-          { status: 200 }
+        },
+        { status: 200 }
     );
 }

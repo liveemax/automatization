@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import classNames from "classnames";
 import { Button } from "@mui/material";
@@ -13,17 +13,21 @@ export default function ExportStorage ({
 
 }) {
   
-  const onEcsportClick = () => {
-    exportToFile('localstorage')
-  }
+    const onEcsportClick = () => {
+        exportToFile("localstorage");
+    };
 
-  return <div className = {classNames(styles.exportStorage)}>
-    <h1>
-      Экспорт / импорт localhost
-    </h1>
-    <div>
-      <Button onClick={onEcsportClick} variant="outlined">Экспорт</Button>
-      <InputFileUpload />
-    </div>
-  </div>;
+    return <div className = {classNames(styles.exportStorage)}>
+        <h1>
+            Экспорт / импорт localhost
+        </h1>
+        <div>
+            <Button onClick={onEcsportClick}
+                variant="outlined"
+            >
+                Экспорт
+            </Button>
+            <InputFileUpload />
+        </div>
+    </div>;
 };

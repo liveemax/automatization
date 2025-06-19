@@ -12,7 +12,7 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@mui/material": "^7.1.1",
-    "@stylistic/eslint-plugin": "^4.4.1",
+    "browsers": "^1.0.2",
     "chrome-launcher": "^1.2.0",
     "classnames": "^2.5.1",
     "dayjs": "^1.11.13",
@@ -26,6 +26,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@stylistic/eslint-plugin": "^4.4.1",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
