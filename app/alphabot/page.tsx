@@ -72,9 +72,7 @@ export default function Home() {
 
             if(data.hrefs) {
                 const raffleBuffer:Array<string> = [];
-                const alphabotRaffles = Object.values(JSON.parse(localStorage.getItem(LOCALSTORAGE_PATH.alphabotRaffles) || ""));
-
-                localStorage.setItem(LOCALSTORAGE_PATH.alphabotRaffles, JSON.stringify(alphabotRaffles));
+                // const alphabotRaffles = Object.values(JSON.parse(localStorage.getItem(LOCALSTORAGE_PATH.alphabotRaffles) || ""));
 
                 data.hrefs.forEach((link:string) => {
                     if(raffleList.indexOf(link) === -1) {
@@ -82,14 +80,25 @@ export default function Home() {
                     }
                 });
 
-                setRaffleList([...raffleList, ...raffleBuffer]);
+                const allRaflse = [...raffleList, ...raffleBuffer];
+                const localstorageRaffles:any = {};
+
+                setRaffleList(allRaflse);
+
+                allRaflse.forEach((raffle) => {
+                    localstorageRaffles[raffle] = raffle;
+                });
+
+                localStorage.setItem(LOCALSTORAGE_PATH.alphabotRaffles, JSON.stringify(localstorageRaffles));
             }
         }
     };
 
     useEffect(() => {
-        const alphabotProjects = Object.values(JSON.parse(localStorage.getItem(LOCALSTORAGE_PATH.alphabotProjects) || "")) as Array<string>;
-        const alphabotRaffles = Object.values(JSON.parse(localStorage.getItem(LOCALSTORAGE_PATH.alphabotRaffles) || "")) as Array<string>;
+        console.log(localStorage.getItem(LOCALSTORAGE_PATH.alphabotProjects),"JSON.parse(localStorage.getItem(LOCALSTORAGE_PATH.alphabotProjects) || \"\")");
+        
+        const alphabotProjects = Object.values(JSON.parse(localStorage.getItem(LOCALSTORAGE_PATH.alphabotProjects) || "[]")) as Array<string>;
+        const alphabotRaffles = Object.values(JSON.parse(localStorage.getItem(LOCALSTORAGE_PATH.alphabotRaffles) || "[]")) as Array<string>;
 
         if(!alphabotProjects.length) {
             localStorage.setItem(LOCALSTORAGE_PATH.alphabotProjects,JSON.stringify({}));
